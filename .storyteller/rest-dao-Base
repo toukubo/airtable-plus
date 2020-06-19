@@ -1,15 +1,73 @@
 const AirtablePlus = require('airtable-plus');
-const airtable = require('airtable-plus-rest-dao-config.js')
+const airtable = require('airtable-plus-rest-dao-config.js');
+const { create } = require('domain');
 const config = { tableName: 'Read' };
+
+class {{name}}{{framework_name}}{{layer_name}}{
+    findByID(id){
+        const res = await inst.find(id);
+        return res
+    }
+
+    {{#attrs}}
+    findBy{{upper}}({{name}}){
+        const readRes = await airtable.read({
+            filterByFormula: '{{upper}} = '+{{name}},
+            maxRecords: 1
+        });
+        this.jsonObject = {}
+        var jsonObject = require(file_path)
+        return jsonObject
+    }
+    {{/attrs}}
+    
+    {{#attrs}}
+    findBy{{upper}}({{name}}){
+        const readRes = await airtable.read({
+            filterByFormula: '{{upper}} = '+{{name}},
+            maxRecords: 500
+        });
+
+        {{noun_lower}}s = readRes // ? this must be more like the 
+        var found = {}
+        {{noun_lower}}s.forEach({{noun_lower}} => {
+            if( {{noun_lower}}.{{name}} === {{name}} ){
+                found = {{noun_lower}}
+            }
+        });
+        return found
+    }
+    {{/attrs}}
+    
+    loadAll() {
+        var fs = require('fs');
+        var {{noun_lower}}s = []
+        var {{noun_lower}}Files = fs.readdirSync(process.cwd() + '/{{noun_lower}}s/');
+
+        {{noun_lower}}sFiles.forEach({{noun_lower}}File => {
+            if ({{noun_lower}}File.endsWith(".json")) {
+                var jsonObject = require(process.cwd() + '/{{noun_lower}}s/' + {{noun_lower}}File)
+                {{noun_lower}}s.push(jsonObject)
+            }
+
+        });
+        return {{noun_lower}}s
+    }
+
+    create({{noun_lower}}{
+
+    }
+    delete({{noun_lower}}){
+
+    }
+
+}
+module.exports = new {{name}}Dao()
+
 
 
 (async () => {
     try {
-        // allows for api params to be passed in from Airtable api
-        const readRes = await airtable.read({
-            filterByFormula: 'Name = "Foo"',
-            maxRecords: 1
-        });
         const updateRes = await airtable.update('1234', {
             Name: 'foobar'
         }, config);
@@ -27,26 +85,3 @@ const config = { tableName: 'Read' };
     }
 })();
 
-
-class {{name}}{{framework_name}}{{layer_name}}{
-    load(){
-
-    }
-    {{#attrs}}
-    findBy{{attr.name}}(){
-
-    }
-    {{/attrs}}
-    of(){
-        const {{name}} = []
-
-    }
-    // # file data 
-    function(){
-        verb_file_path = VERB_BASE + RESTBASE + "/" + this.name
-        template = fs.readFileSync(verb_file_path, 'utf-8');
-        return template
-    }
-
-}
-module.exports = new {{name}}Dao()
