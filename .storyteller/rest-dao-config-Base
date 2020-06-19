@@ -1,0 +1,17 @@
+const AirtablePlus = require('airtable-plus');
+require('dotenv')
+
+AIRTABLE_BASE_HASH=process.env.AIRTABLE_BASE_HASH
+AIRTABLE_API_KEY=process.env.AIRTABLE_API_KEY
+console.log("AIRTABLE_BASE_HASH : ")
+console.dir(AIRTABLE_BASE_HASH)
+console.log("AIRTABLE_API_KEY : ")
+console.dir(AIRTABLE_API_KEY)
+
+function read(){
+
+}
+const airtable = new AirtablePlus({
+    baseID: AIRTABLE_BASE_HASH,
+    apiKey: AIRTABLE_API_KEY
+});

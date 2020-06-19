@@ -1,0 +1,52 @@
+const AirtablePlus = require('airtable-plus');
+const airtable = require('airtable-plus-rest-dao-config.js')
+const config = { tableName: 'Read' };
+
+
+(async () => {
+    try {
+        // allows for api params to be passed in from Airtable api
+        const readRes = await airtable.read({
+            filterByFormula: 'Name = "Foo"',
+            maxRecords: 1
+        });
+        const updateRes = await airtable.update('1234', {
+            Name: 'foobar'
+        }, config);
+
+        const updateWhereRes = await airtable.updateWhere('Name = "Foo"', {
+            filterByFormula: 'Name = "foobar"'
+        });
+
+        const deleteRes = await airtable.delete('1234');
+
+        const truncRes = await airtable.truncate();
+    }
+    catch(e) {
+        console.error(e);
+    }
+})();
+
+
+class {{name}}{{framework_name}}{{layer_name}}{
+    load(){
+
+    }
+    {{#attrs}}
+    findBy{{attr.name}}(){
+
+    }
+    {{/attrs}}
+    of(){
+        const {{name}} = []
+
+    }
+    // # file data 
+    function(){
+        verb_file_path = VERB_BASE + RESTBASE + "/" + this.name
+        template = fs.readFileSync(verb_file_path, 'utf-8');
+        return template
+    }
+
+}
+module.exports = new {{name}}Dao()
