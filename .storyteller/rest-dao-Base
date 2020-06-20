@@ -4,6 +4,11 @@ const { create } = require('domain');
 const config = { tableName: 'Read' };
 
 class {{name}}{{framework_name}}{{layer_name}}{
+ 
+    create({{noun_lower}}_json){
+        const res = await inst.create({{noun_lower}}_json,config)
+    }
+ 
     findByID(id){
         const res = await inst.find(id);
         return res
@@ -27,15 +32,8 @@ class {{name}}{{framework_name}}{{layer_name}}{
             filterByFormula: '{{upper}} = '+{{name}},
             maxRecords: 500
         });
-
         {{noun_lower}}s = readRes // ? this must be more like the 
-        var found = {}
-        {{noun_lower}}s.forEach({{noun_lower}} => {
-            if( {{noun_lower}}.{{name}} === {{name}} ){
-                found = {{noun_lower}}
-            }
-        });
-        return found
+        return {{noun_lower}}s
     }
     {{/attrs}}
     
@@ -54,12 +52,17 @@ class {{name}}{{framework_name}}{{layer_name}}{
         return {{noun_lower}}s
     }
 
-    create({{noun_lower}}{
-
+    update({{noun_lower}}_json){
+        const updateRes = await airtable.update({{noun_lower}}_json.id, {
+            Name: 'foobar'
+        }, config);
+        return updateRes
     }
-    delete({{noun_lower}}){
 
+    delete(id){
+        const deleteRes = await airtable.delete(id,config);
     }
+
 
 }
 module.exports = new {{name}}Dao()
@@ -68,15 +71,12 @@ module.exports = new {{name}}Dao()
 
 (async () => {
     try {
-        const updateRes = await airtable.update('1234', {
-            Name: 'foobar'
-        }, config);
+
 
         const updateWhereRes = await airtable.updateWhere('Name = "Foo"', {
             filterByFormula: 'Name = "foobar"'
         });
 
-        const deleteRes = await airtable.delete('1234');
 
         const truncRes = await airtable.truncate();
     }
