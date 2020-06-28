@@ -3,10 +3,10 @@ const airtable = require('airtable-plus-rest-dao-config.js');
 const { create } = require('domain');
 const config = { tableName: 'Read' };
 
-class {{name}}{{framework_name}}{{layer_name}}{
+class {{name}}{{framework_name}}{{layer_name}}Dao{
  
-    create({{noun_lower}}_json){
-        const res = await inst.create({{noun_lower}}_json,config)
+    create({{lower}}_json){
+        const res = await inst.create({{lower}}_json,config)
     }
  
     findByID(id){
@@ -15,7 +15,7 @@ class {{name}}{{framework_name}}{{layer_name}}{
     }
 
     {{#attrs}}
-    findBy{{upper}}({{name}}){
+    findBy{{upper}}({{name}}){ // this is for the unique key based finding, like it has anotehr key like name, account mail address, one time passwords.
         const readRes = await airtable.read({
             filterByFormula: '{{upper}} = '+{{name}},
             maxRecords: 1
@@ -26,34 +26,34 @@ class {{name}}{{framework_name}}{{layer_name}}{
     }
     {{/attrs}}
     
-    {{#attrs}}
-    findBy{{upper}}({{name}}){
+    {{#attrs}} // this is for OF restriction. 
+    of{{upper}}({{name}}){ 
         const readRes = await airtable.read({
             filterByFormula: '{{upper}} = '+{{name}},
             maxRecords: 500
         });
-        {{noun_lower}}s = readRes // ? this must be more like the 
-        return {{noun_lower}}s
+        {{lower}}s = readRes // ? this must be more like the 
+        return {{lower}}s
     }
     {{/attrs}}
     
-    loadAll() {
+    loadAllFromCache() {
         var fs = require('fs');
-        var {{noun_lower}}s = []
-        var {{noun_lower}}Files = fs.readdirSync(process.cwd() + '/{{noun_lower}}s/');
+        var {{lower}}s = []
+        var {{lower}}Files = fs.readdirSync(process.cwd() + '/{{lower}}s/');
 
-        {{noun_lower}}sFiles.forEach({{noun_lower}}File => {
-            if ({{noun_lower}}File.endsWith(".json")) {
-                var jsonObject = require(process.cwd() + '/{{noun_lower}}s/' + {{noun_lower}}File)
-                {{noun_lower}}s.push(jsonObject)
+        {{lower}}sFiles.forEach({{lower}}File => {
+            if ({{lower}}File.endsWith(".json")) {
+                var jsonObject = require(process.cwd() + '/{{lower}}s/' + {{lower}}File)
+                {{lower}}s.push(jsonObject)
             }
 
         });
-        return {{noun_lower}}s
+        return {{lower}}s
     }
 
-    update({{noun_lower}}_json){
-        const updateRes = await airtable.update({{noun_lower}}_json.id, {
+    update({{lower}}_json){
+        const updateRes = await airtable.update({{lower}}_json.id, {
             Name: 'foobar'
         }, config);
         return updateRes
@@ -66,22 +66,3 @@ class {{name}}{{framework_name}}{{layer_name}}{
 
 }
 module.exports = new {{name}}Dao()
-
-
-
-(async () => {
-    try {
-
-
-        const updateWhereRes = await airtable.updateWhere('Name = "Foo"', {
-            filterByFormula: 'Name = "foobar"'
-        });
-
-
-        const truncRes = await airtable.truncate();
-    }
-    catch(e) {
-        console.error(e);
-    }
-})();
-
